@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # An example hook script to verify what is about to be committed.
 # Called by "git commit" with no arguments.  The hook should
@@ -9,7 +9,7 @@
 
 echo -e "Making pre-commit requirements.txt"
 
-pipreqs . 
+pipreqs . --force
 
 
 if [ $? = 0 ]; then
@@ -19,3 +19,11 @@ else
 	echo "Cancelling commit"
 	exit 1
 fi
+
+files=`git diff --cached --name-status`
+requirements="requirements.txt"
+
+if ! [[ $files =~ $requirements ]]; then
+	git add $requirements
+fi
+
